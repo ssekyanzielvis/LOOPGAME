@@ -6,9 +6,92 @@ This updated version of the Math Shape Creator includes several powerful enhance
 
 ---
 
+## 🎨 UI/UX Enhancements (LATEST!)
+
+### Responsive Design with Bottom Navigation Bar
+The app now adapts perfectly to all screen sizes with intelligent UI layout!
+
+**Mobile Optimization (< 600px width):**
+- **Simplified App Bar:** Only essential controls in the top bar
+  - Mode switcher (dropdown menu)
+  - Templates button (shapes mode only)
+  - Info/About button
+- **Bottom Navigation Bar:** Quick access to key actions
+  - Undo button (left)
+  - Redo button
+  - Export/Share button (highlighted center)
+  - Settings button (right)
+- **Compact Layout:** Title and icons scale down for small screens
+- **No Overflow:** All controls fit perfectly without cutting off
+
+**Tablet/Desktop (≥ 600px width):**
+- **Full App Bar:** All controls remain in the top bar
+  - Full mode switcher with labels
+  - All action buttons visible
+  - Larger icons and text
+- **No Bottom Bar:** Clean interface without bottom navigation
+- **Side-by-side Layout:** Controls and preview shown together
+
+**Benefits:**
+- ✅ No more icon overflow on mobile devices
+- ✅ Better thumb-reach ergonomics on phones
+- ✅ Cleaner, more professional appearance
+- ✅ Consistent experience across all devices
+- ✅ Improved usability with context-aware UI
+
+---
+
+## ⚙️ Settings & Customization (NEW!)
+
+### Comprehensive Theme Customization
+Personalize your app experience with extensive customization options!
+
+**Theme Mode:**
+- ☀️ Light Mode - Bright and clean interface
+- 🌙 Dark Mode - Easy on the eyes in low light
+- 🔄 System Default - Matches your device settings
+
+**Theme Colors (8 Options):**
+- 🔵 Blue (default)
+- 🟢 Green
+- 🟣 Purple
+- 🟠 Orange
+- 🔴 Red
+- 🩵 Teal
+- 🩷 Pink
+- 💙 Indigo
+
+**Font Customization:**
+- Adjustable font size (80% - 140%)
+- Quick size buttons (80%, 100%, 120%, 140%)
+- Perfect for accessibility needs
+
+**Custom Text Colors:**
+- Toggle to enable custom text color
+- 8 preset color options
+- Apply to all text throughout the app
+
+**Preview Card:**
+- Real-time preview of your theme settings
+- See changes instantly before applying
+
+---
+
 ## ✨ Major Enhancements
 
-### 1. 🔁 Text Loop Feature (NEW!)
+### 1. 🎨 Sticker Loop Feature (NEW!)
+Loop and repeat stickers in various patterns!
+
+**Features:**
+- **Sticker Selection:** Choose from built-in stickers or add custom URLs
+- **Pattern Support:** Horizontal, vertical, wrapped, and grid layouts
+- **Inline Preview:** Stickers render directly in the preview
+- **Customizable:** Set loop count, wrap width, and separator
+- **Export Ready:** Copy and share sticker creations
+
+---
+
+### 2. 🔁 Text Loop Feature
 Loop and repeat any text or characters up to 1 MILLION times with various patterns!
 
 **Features:**
@@ -41,7 +124,7 @@ Loop and repeat any text or characters up to 1 MILLION times with various patter
 
 ---
 
-### 2. 🔢 Number Digit Support (0-9)
+### 3. 🔢 Number Digit Support (0-9)
 Create beautiful ASCII art representations of all digits from 0 to 9!
 
 **Features:**
@@ -58,26 +141,41 @@ Create beautiful ASCII art representations of all digits from 0 to 9!
 
 ---
 
-### 3. 📱 Fully Responsive Design
-The app now adapts beautifully to any screen size!
+### 4. 📱 Fully Responsive Design
+The app now adapts beautifully to any screen size with intelligent UI!
 
 **Responsive Features:**
-- **Small screens (phones):** Optimized vertical layout
-- **Medium screens (tablets):** Balanced layout with larger controls
-- **Large screens (desktops):** Side-by-side layout for productivity
-- Automatic font size scaling
-- Responsive padding and spacing
-- Adaptive icon sizes
-- Grid columns adjust based on screen size
+- **Small screens (phones < 600px):** 
+  - Simplified app bar with dropdown mode switcher
+  - Bottom navigation bar with key actions
+  - Optimized vertical layout
+  - Compact text and icons
+- **Medium screens (tablets 600-1024px):**
+  - Full app bar with all controls
+  - Balanced layout with larger controls
+  - No bottom bar needed
+- **Large screens (desktops > 1024px):**
+  - Side-by-side layout for productivity
+  - All controls in app bar
+  - Maximum screen real estate usage
+
+**Bottom Navigation Bar (Mobile Only):**
+- Undo/Redo buttons for quick access
+- Highlighted Export/Share button
+- Settings button
+- Thumb-friendly positioning
 
 **Technical Implementation:**
 - Uses `ResponsiveService` for consistent responsive behavior
 - `MediaQuery` and `LayoutBuilder` for dynamic layouts
 - Breakpoints: < 600px (phone), 600-1024px (tablet), > 1024px (desktop)
+- Automatic font size scaling
+- Responsive padding and spacing
+- Adaptive icon sizes
 
 ---
 
-### 4. 💾 Export & Save Functionality
+### 5. 💾 Export & Save Functionality
 Share and save your creations in multiple ways!
 
 **Export Options:**
@@ -94,7 +192,7 @@ Share and save your creations in multiple ways!
 
 ---
 
-### 4. ⏮️ Undo/Redo Functionality
+### 6. ⏮️ Undo/Redo Functionality
 Never lose your work with powerful history management!
 
 **Features:**
@@ -111,7 +209,7 @@ Never lose your work with powerful history management!
 
 ---
 
-### 5. 🎨 Preset Templates
+### 7. 🎨 Preset Templates
 20+ beautiful pre-configured templates for instant creativity!
 
 **Template Categories:**

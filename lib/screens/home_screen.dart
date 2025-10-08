@@ -327,108 +327,43 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Check if the screen is mobile size
+  bool _isMobileScreen(BuildContext context) {
+    return MediaQuery.of(context).size.width < 600;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = _isMobileScreen(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.calculate, size: ResponsiveService.getIconSize(context, 24)),
-            SizedBox(width: ResponsiveService.getResponsiveSpacing(context) / 2),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Math Shape Creator'),
-                Text(
-                  _mode == LoopMode.shape ? 'Shape Mode' : 'Text Loop Mode',
-                  style: TextStyle(fontSize: 10, color: Colors.grey[300]),
-                ),
-              ],
+            Icon(Icons.calculate, size: isMobile ? 20 : 24),
+            SizedBox(width: isMobile ? 4 : 8),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Math Shape Creator',
+                    style: TextStyle(fontSize: isMobile ? 16 : 20),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (!isMobile)
+                    Text(
+                      _mode == LoopMode.shape ? 'Shape Mode' : 'Text Loop Mode',
+                      style: TextStyle(fontSize: 10, color: Colors.grey[300]),
+                    ),
+                ],
+              ),
             ),
           ],
         ),
-        actions: [
-          // Mode Switcher
-          SegmentedButton<LoopMode>(
-            segments: const [
-              ButtonSegment<LoopMode>(
-                value: LoopMode.shape,
-                label: Text('Shapes'),
-                icon: Icon(Icons.star, size: 16),
-              ),
-              ButtonSegment<LoopMode>(
-                value: LoopMode.textLoop,
-                label: Text('Text Loop'),
-                icon: Icon(Icons.loop, size: 16),
-              ),
-            ],
-            selected: {_mode},
-            onSelectionChanged: (Set<LoopMode> newSelection) {
-              setState(() {
-                _mode = newSelection.first;
-              });
-              _generateShape();
-            },
-            style: ButtonStyle(
-              textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 12)),
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Presets/Templates button (only for shape mode)
-          if (_mode == LoopMode.shape)
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PresetsScreen(
-                      onPresetSelected: _applyPreset,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.auto_awesome),
-              tooltip: 'Templates',
-            ),
-          // Undo button
-          IconButton(
-            onPressed: _historyService.canUndo ? _undo : null,
-            icon: const Icon(Icons.undo),
-            tooltip: 'Undo',
-          ),
-          // Redo button
-          IconButton(
-            onPressed: _historyService.canRedo ? _redo : null,
-            icon: const Icon(Icons.redo),
-            tooltip: 'Redo',
-          ),
-          // Export/Share button
-          IconButton(
-            onPressed: _shapeOutput.isNotEmpty ? _showExportOptions : null,
-            icon: const Icon(Icons.ios_share),
-            tooltip: 'Export & Share',
-          ),
-          // Settings button
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-            icon: const Icon(Icons.settings),
-            tooltip: 'Settings',
-          ),
-          IconButton(
-            onPressed: () {
-              _showInfoDialog(context);
-            },
-            icon: const Icon(Icons.info_outline),
-            tooltip: 'About App',
-          ),
-        ],
+        actions: isMobile ? _buildMobileAppBarActions() : _buildDesktopAppBarActions(),
       ),
       body: SafeArea(
         child: LayoutBuilder(
@@ -442,6 +377,209 @@ class _HomeScreenState extends State<HomeScreen> {
               return _buildMobileLayout();
             }
           },
+        ),
+      ),
+      bottomNavigationBar: isMobile ? _buildBottomAppBar() : null,
+    );
+  }
+
+  // Mobile app bar actions (simplified)
+  List<Widget> _buildMobileAppBarActions() {
+    return [
+      // Mode Switcher (compact for mobile)
+      PopupMenuButton<LoopMode>(
+        icon: Icon(_mode == LoopMode.shape ? Icons.star : Icons.loop),
+        tooltip: 'Switch Mode',
+        onSelected: (LoopMode mode) {
+          setState(() {
+            _mode = mode;
+          });
+          _generateShape();
+        },
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: LoopMode.shape,
+            child: Row(
+              children: [
+                Icon(Icons.star, size: 20, color: _mode == LoopMode.shape ? Theme.of(context).primaryColor : null),
+                const SizedBox(width: 8),
+                const Text('Shapes'),
+              ],
+            ),
+          ),
+          PopupMenuItem(
+            value: LoopMode.textLoop,
+            child: Row(
+              children: [
+                Icon(Icons.loop, size: 20, color: _mode == LoopMode.textLoop ? Theme.of(context).primaryColor : null),
+                const SizedBox(width: 8),
+                const Text('Text Loop'),
+              ],
+            ),
+          ),
+        ],
+      ),
+      // Templates button (only for shape mode)
+      if (_mode == LoopMode.shape)
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PresetsScreen(
+                  onPresetSelected: _applyPreset,
+                ),
+              ),
+            );
+          },
+          icon: const Icon(Icons.auto_awesome),
+          tooltip: 'Templates',
+        ),
+      // Info button
+      IconButton(
+        onPressed: () {
+          _showInfoDialog(context);
+        },
+        icon: const Icon(Icons.info_outline),
+        tooltip: 'About',
+      ),
+    ];
+  }
+
+  // Desktop app bar actions (full)
+  List<Widget> _buildDesktopAppBarActions() {
+    return [
+      // Mode Switcher
+      SegmentedButton<LoopMode>(
+        segments: const [
+          ButtonSegment<LoopMode>(
+            value: LoopMode.shape,
+            label: Text('Shapes'),
+            icon: Icon(Icons.star, size: 16),
+          ),
+          ButtonSegment<LoopMode>(
+            value: LoopMode.textLoop,
+            label: Text('Text Loop'),
+            icon: Icon(Icons.loop, size: 16),
+          ),
+        ],
+        selected: {_mode},
+        onSelectionChanged: (Set<LoopMode> newSelection) {
+          setState(() {
+            _mode = newSelection.first;
+          });
+          _generateShape();
+        },
+        style: ButtonStyle(
+          textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 12)),
+        ),
+      ),
+      const SizedBox(width: 8),
+      // Presets/Templates button (only for shape mode)
+      if (_mode == LoopMode.shape)
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PresetsScreen(
+                  onPresetSelected: _applyPreset,
+                ),
+              ),
+            );
+          },
+          icon: const Icon(Icons.auto_awesome),
+          tooltip: 'Templates',
+        ),
+      // Undo button
+      IconButton(
+        onPressed: _historyService.canUndo ? _undo : null,
+        icon: const Icon(Icons.undo),
+        tooltip: 'Undo',
+      ),
+      // Redo button
+      IconButton(
+        onPressed: _historyService.canRedo ? _redo : null,
+        icon: const Icon(Icons.redo),
+        tooltip: 'Redo',
+      ),
+      // Export/Share button
+      IconButton(
+        onPressed: _shapeOutput.isNotEmpty ? _showExportOptions : null,
+        icon: const Icon(Icons.ios_share),
+        tooltip: 'Export & Share',
+      ),
+      // Settings button
+      IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
+        },
+        icon: const Icon(Icons.settings),
+        tooltip: 'Settings',
+      ),
+      IconButton(
+        onPressed: () {
+          _showInfoDialog(context);
+        },
+        icon: const Icon(Icons.info_outline),
+        tooltip: 'About App',
+      ),
+    ];
+  }
+
+  // Bottom app bar for mobile
+  Widget _buildBottomAppBar() {
+    return BottomAppBar(
+      elevation: 8,
+      child: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            // Undo button
+            IconButton(
+              onPressed: _historyService.canUndo ? _undo : null,
+              icon: const Icon(Icons.undo),
+              tooltip: 'Undo',
+              iconSize: 24,
+            ),
+            // Redo button
+            IconButton(
+              onPressed: _historyService.canRedo ? _redo : null,
+              icon: const Icon(Icons.redo),
+              tooltip: 'Redo',
+              iconSize: 24,
+            ),
+            // Export/Share button (highlighted)
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                onPressed: _shapeOutput.isNotEmpty ? _showExportOptions : null,
+                icon: const Icon(Icons.ios_share, color: Colors.white),
+                tooltip: 'Export & Share',
+                iconSize: 24,
+              ),
+            ),
+            // Settings button
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                );
+              },
+              icon: const Icon(Icons.settings),
+              tooltip: 'Settings',
+              iconSize: 24,
+            ),
+          ],
         ),
       ),
     );
