@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../services/enhanced_shape_generator.dart';
 import '../widgets/emoji_picker.dart';
+import '../widgets/sticker_picker.dart';
 
 class EnhancedControlPanel extends StatefulWidget {
   final String character;
+  final String? sticker;
   final int repetitions;
   final ShapeType shapeType;
   final double size;
   final bool filled;
   final ColorMode colorMode;
+  final Function(String?) onStickerChanged;
   final Function(String) onCharacterChanged;
   final Function(int) onRepetitionsChanged;
   final Function(ShapeType) onShapeTypeChanged;
@@ -21,6 +24,7 @@ class EnhancedControlPanel extends StatefulWidget {
   const EnhancedControlPanel({
     super.key,
     required this.character,
+    this.sticker,
     required this.repetitions,
     required this.shapeType,
     required this.size,
@@ -34,6 +38,7 @@ class EnhancedControlPanel extends StatefulWidget {
     required this.onColorModeChanged,
     required this.onGenerate,
     required this.onAddToMultiple,
+    required this.onStickerChanged,
   });
 
   @override
@@ -46,6 +51,7 @@ class _EnhancedControlPanelState extends State<EnhancedControlPanel>
   late TabController _tabController;
   bool _showEmojiPicker = false;
   bool _showQuickCharacters = false;
+  bool _showStickerPicker = false;
 
   @override
   void initState() {
@@ -160,9 +166,49 @@ class _EnhancedControlPanelState extends State<EnhancedControlPanel>
           // Emoji Picker Toggle
           _buildEmojiSection(),
           const SizedBox(height: 20),
-          
+
+          // Sticker Picker Toggle
+          _buildStickerSection(),
+          const SizedBox(height: 20),
+
           // Quick Characters Toggle
           _buildQuickCharactersSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStickerSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.teal.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.teal.withValues(alpha: 0.12)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.sticky_note_2, color: Colors.teal),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Stickers', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Use image stickers instead of characters', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _showStickerPicker = !_showStickerPicker;
+                _showEmojiPicker = false;
+                _showQuickCharacters = false;
+              });
+            },
+            child: const Text('Browse'),
+          ),
         ],
       ),
     );
@@ -349,6 +395,21 @@ class _EnhancedControlPanelState extends State<EnhancedControlPanel>
               });
             },
             currentCharacter: widget.character,
+          ),
+        ],
+        if (_showStickerPicker) ...[
+          const SizedBox(height: 12),
+          StickerPicker(
+            currentSticker: widget.sticker,
+            onStickerSelected: (id) {
+              final token = '[sticker:$id]';
+              _characterController.text = token;
+              widget.onCharacterChanged(token);
+              widget.onStickerChanged(id);
+              setState(() {
+                _showStickerPicker = false;
+              });
+            },
           ),
         ],
       ],

@@ -1,17 +1,20 @@
 # Math Shape Creator 🎨
 
-A Flutter mobile app that creates beautiful mathematical shapes using characters, numbers, letters, emojis, and mathematical algorithms.
+A Flutter mobile app that creates beautiful mathematical shapes using characters, numbers, letters, emojis, stickers, and mathematical algorithms.
 
 ## Features ✨
 
-- **7 Shape Types**: Circle, Square, Triangle, Heart, Spiral, Star, and Diamond
+- **7+ Shape Types**: Circle, Square, Triangle, Heart, Spiral, Star, Diamond, and more
 - **Custom Characters**: Use any character, number, letter, or emoji
-- **Adjustable Parameters**: Control repetitions (10-500) and size (1.0x-10.0x)
+- **Sticker Looping**: Loop image stickers in various patterns for creative designs
+- **Text Loop Mode**: Repeat text in horizontal, vertical, wrapped, or grid patterns
+- **Adjustable Parameters**: Control repetitions (10-500+) and size (1.0x-10.0x)
 - **Real-time Preview**: See your shapes update as you change parameters
 - **Copy to Clipboard**: Easy copying of generated shapes
 - **Share Functionality**: Share your mathematical art with others
 - **Responsive Design**: Works on phones and tablets
 - **Mathematical Algorithms**: Powered by precise geometric calculations
+- **Improved Accuracy**: Enhanced shape rendering with smoothing and better scaling
 
 ## Mathematical Algorithms 📐
 
@@ -65,11 +68,18 @@ flutter build apk --release
 ## Usage Instructions 📱
 
 1. **Choose a Character**: Enter any character, number, letter, or emoji in the input field
-2. **Select Shape Type**: Choose from 7 different mathematical shapes
-3. **Adjust Repetitions**: Use the slider to control the density (10-500)
+2. **Select Shape Type**: Choose from 7+ different mathematical shapes
+3. **Adjust Repetitions**: Use the slider to control the density (10-500+)
 4. **Set Size**: Adjust the size multiplier (1.0x-10.0x)
 5. **Generate**: Click "Generate Shape" or watch real-time updates
 6. **Copy/Share**: Use the action buttons to copy or share your creation
+
+### New: Sticker Mode 🎪
+1. **Select Sticker**: Click the sticker icon in the Style tab to browse stickers
+2. **Choose Pattern**: Switch to Text Loop mode for flexible sticker arrangements
+3. **Set Loop Count**: Control how many times the sticker repeats (up to 1 million!)
+4. **Pick Pattern**: Choose from Horizontal, Vertical, Wrapped, or Grid layouts
+5. **Generate**: Create stunning sticker loops in various patterns
 
 ## Project Structure 📁
 

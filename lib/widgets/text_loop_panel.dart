@@ -87,7 +87,7 @@ class _TextLoopPanelState extends State<TextLoopPanel> {
                 ),
                 const Spacer(),
                 Chip(
-                  label: Text('Max: 1M'),
+                  label: const Text('Max: 1M'),
                   backgroundColor: Colors.green.withValues(alpha: 0.1),
                 ),
               ],

@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   
   // Shape mode state variables
   String _character = '*';
+  String? _selectedSticker; // sticker identifier for sticker loop mode
   int _repetitions = 50;
   ShapeType _shapeType = ShapeType.circle;
   double _size = 5.0;
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ColorMode _colorMode = ColorMode.single;
   String _shapeOutput = '';
   bool _isGenerating = false;
-  List<String> _multipleShapes = [];
+  final List<String> _multipleShapes = [];
   
   // Text loop mode state variables
   String _loopText = 'Hello World';
@@ -70,7 +71,16 @@ class _HomeScreenState extends State<HomeScreen> {
       await Future.delayed(const Duration(milliseconds: 100));
       
       String output;
-      if (_mode == LoopMode.textLoop) {
+      if (_selectedSticker != null && _selectedSticker!.isNotEmpty) {
+        // Sticker loop mode
+        output = ShapeGeneratorService.generateStickerLoop(
+          stickerId: _selectedSticker!,
+          loopCount: _mode == LoopMode.textLoop ? _loopCount : _repetitions,
+          pattern: _mode == LoopMode.textLoop ? _loopPattern : LoopPattern.horizontal,
+          wrapWidth: _wrapWidth,
+          separator: _separator,
+        );
+      } else if (_mode == LoopMode.textLoop) {
         output = ShapeGeneratorService.generateTextLoop(
           text: _loopText,
           loopCount: _loopCount,
@@ -253,6 +263,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onColorModeChanged(ColorMode colorMode) {
     setState(() {
       _colorMode = colorMode;
+    });
+    _generateShapeWithDebounce();
+  }
+
+  void _onStickerChanged(String? stickerId) {
+    setState(() {
+      _selectedSticker = stickerId;
     });
     _generateShapeWithDebounce();
   }
@@ -472,12 +489,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : EnhancedControlPanel(
                     character: _character,
+                    sticker: _selectedSticker,
                     repetitions: _repetitions,
                     shapeType: _shapeType,
                     size: _size,
                     filled: _filled,
                     colorMode: _colorMode,
                     onCharacterChanged: _onCharacterChanged,
+                    onStickerChanged: _onStickerChanged,
                     onRepetitionsChanged: _onRepetitionsChanged,
                     onShapeTypeChanged: _onShapeTypeChanged,
                     onSizeChanged: _onSizeChanged,
@@ -516,12 +535,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : EnhancedControlPanel(
                     character: _character,
+                    sticker: _selectedSticker,
                     repetitions: _repetitions,
                     shapeType: _shapeType,
                     size: _size,
                     filled: _filled,
                     colorMode: _colorMode,
               onCharacterChanged: _onCharacterChanged,
+              onStickerChanged: _onStickerChanged,
               onRepetitionsChanged: _onRepetitionsChanged,
               onShapeTypeChanged: _onShapeTypeChanged,
               onSizeChanged: _onSizeChanged,

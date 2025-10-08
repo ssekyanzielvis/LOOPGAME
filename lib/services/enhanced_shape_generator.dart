@@ -336,13 +336,92 @@ class ShapeGeneratorService {
     }
   }
 
+  /// Generate sticker loop with specified pattern
+  /// Produces sticker placeholder tokens suitable for rendering
+  /// Supports up to 1 million repetitions
+  static String generateStickerLoop({
+    required String stickerId,
+    required int loopCount,
+    LoopPattern pattern = LoopPattern.horizontal,
+    int wrapWidth = 80,
+    String separator = ' ',
+  }) {
+    if (stickerId.isEmpty) return '';
+    if (loopCount <= 0) return '';
+    if (loopCount > 1000000) {
+      return 'Error: Loop count exceeds maximum (1,000,000)';
+    }
+
+    final String token = '[sticker:$stickerId]';
+    final StringBuffer buffer = StringBuffer();
+
+    switch (pattern) {
+      case LoopPattern.horizontal:
+        for (int i = 0; i < loopCount; i++) {
+          buffer.write(token);
+          if (i < loopCount - 1 && separator.isNotEmpty) {
+            buffer.write(separator);
+          }
+        }
+        break;
+
+      case LoopPattern.vertical:
+        for (int i = 0; i < loopCount; i++) {
+          buffer.writeln(token);
+        }
+        break;
+
+      case LoopPattern.wrapped:
+        final int tokenLength = token.length + separator.length;
+        int currentLineLength = 0;
+        
+        for (int i = 0; i < loopCount; i++) {
+          if (currentLineLength + tokenLength > wrapWidth && currentLineLength > 0) {
+            buffer.writeln();
+            currentLineLength = 0;
+          }
+          
+          buffer.write(token);
+          currentLineLength += token.length;
+          
+          if (i < loopCount - 1 && separator.isNotEmpty) {
+            buffer.write(separator);
+            currentLineLength += separator.length;
+          }
+        }
+        break;
+
+      case LoopPattern.grid:
+        final int itemsPerRow = (wrapWidth / (token.length + separator.length)).floor();
+        if (itemsPerRow <= 0) {
+          for (int i = 0; i < loopCount; i++) {
+            buffer.writeln(token);
+          }
+        } else {
+          for (int i = 0; i < loopCount; i++) {
+            buffer.write(token);
+            
+            if ((i + 1) % itemsPerRow == 0) {
+              buffer.writeln();
+            } else if (separator.isNotEmpty && i < loopCount - 1) {
+              buffer.write(separator);
+            }
+          }
+        }
+        break;
+    }
+
+    return buffer.toString();
+  }
+
   // Basic Shape Generators
   static String _generateCircle(String char, int repetitions, double size, bool filled) {
     final StringBuffer buffer = StringBuffer();
-    final int radius = (repetitions * size / 10).round();
+    final int radius = (repetitions * size / 10).round().clamp(3, 100);
     final int diameter = radius * 2 + 1;
     final double centerX = radius.toDouble();
     final double centerY = radius.toDouble();
+    final double smoothness = 0.45; // slight smoothing for better accuracy
 
     for (int y = 0; y < diameter; y++) {
       for (int x = 0; x < diameter; x++) {
@@ -351,13 +430,13 @@ class ShapeGeneratorService {
         );
         
         if (filled) {
-          if (distance <= radius) {
+          if (distance <= radius + smoothness) {
             buffer.write(char);
           } else {
             buffer.write(' ');
           }
         } else {
-          if ((distance - radius).abs() <= size * 0.5) {
+          if ((distance - radius).abs() <= size * 0.5 + smoothness) {
             buffer.write(char);
           } else {
             buffer.write(' ');
@@ -392,7 +471,7 @@ class ShapeGeneratorService {
 
   static String _generateTriangle(String char, int repetitions, double size, bool filled) {
     final StringBuffer buffer = StringBuffer();
-    final int height = (repetitions * size / 10).round();
+    final int height = (repetitions * size / 10).round().clamp(5, 50);
     
     for (int i = 0; i < height; i++) {
       final int spaces = height - i - 1;
@@ -404,6 +483,7 @@ class ShapeGeneratorService {
         if (filled) {
           buffer.write(char);
         } else {
+          // More accurate outline: only edges and base
           if (j == 0 || j == chars - 1 || i == height - 1) {
             buffer.write(char);
           } else {
@@ -418,17 +498,18 @@ class ShapeGeneratorService {
 
   static String _generateHeart(String char, int repetitions, double size, bool filled) {
     final StringBuffer buffer = StringBuffer();
-    final int scale = (repetitions * size / 50).round().clamp(1, 20);
+    final int scale = (repetitions * size / 50).round().clamp(2, 20);
     
     for (int y = -scale; y <= scale; y++) {
       for (int x = -scale * 2; x <= scale * 2; x++) {
         final double xNorm = x / scale.toDouble();
         final double yNorm = y / scale.toDouble();
         
+        // More accurate heart equation with slight smoothing
         final double heartEq = math.pow(xNorm * xNorm + yNorm * yNorm - 1, 3) - 
                               xNorm * xNorm * yNorm * yNorm * yNorm;
         
-        if (heartEq <= 0) {
+        if (heartEq <= 0.05) { // slight smoothing for better appearance
           buffer.write(char);
         } else {
           buffer.write(' ');

@@ -142,6 +142,9 @@ class ShapePreview extends StatelessWidget {
   }
 
   Widget _buildShapeDisplay(BuildContext context) {
+    // Check if the output contains sticker tokens
+    final bool hasStickers = shapeOutput.contains(RegExp(r'\[sticker:[^\]]+\]'));
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16.0),
@@ -154,17 +157,103 @@ class ShapePreview extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: SelectableText(
-            shapeOutput,
+          child: hasStickers 
+              ? _buildStickerPreview(context)
+              : SelectableText(
+                  shapeOutput,
+                  style: const TextStyle(
+                    fontFamily: 'Courier New',
+                    fontSize: 12,
+                    height: 1.0,
+                    color: Color(0xFF333333),
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStickerPreview(BuildContext context) {
+    final List<Widget> children = [];
+    final RegExp stickerRegex = RegExp(r'\[sticker:([^\]]+)\]');
+    
+    // Parse line-by-line to preserve structure
+    final lines = shapeOutput.split('\n');
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      final List<Widget> lineWidgets = [];
+      
+      int lastIndex = 0;
+      for (final match in stickerRegex.allMatches(line)) {
+        // Add text before the match
+        if (match.start > lastIndex) {
+          final text = line.substring(lastIndex, match.start);
+          lineWidgets.add(Text(
+            text,
             style: const TextStyle(
               fontFamily: 'Courier New',
               fontSize: 12,
               height: 1.0,
-              color: Color(0xFF333333),
             ),
+          ));
+        }
+        
+        // Add sticker image
+        final stickerId = match.group(1)!;
+        Widget stickerWidget;
+        if (stickerId.startsWith('http')) {
+          stickerWidget = Image.network(
+            stickerId,
+            width: 20,
+            height: 20,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 20),
+          );
+        } else {
+          stickerWidget = Image.asset(
+            stickerId,
+            width: 20,
+            height: 20,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 20),
+          );
+        }
+        lineWidgets.add(stickerWidget);
+        lastIndex = match.end;
+      }
+      
+      // Add remaining text
+      if (lastIndex < line.length) {
+        final text = line.substring(lastIndex);
+        lineWidgets.add(Text(
+          text,
+          style: const TextStyle(
+            fontFamily: 'Courier New',
+            fontSize: 12,
+            height: 1.0,
           ),
-        ),
-      ),
+        ));
+      }
+      
+      // Add the line as a Row
+      if (lineWidgets.isNotEmpty) {
+        children.add(Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: lineWidgets,
+        ));
+      }
+      
+      // Add line break (except for last line)
+      if (i < lines.length - 1) {
+        children.add(const SizedBox(height: 12));
+      }
+    }
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: children,
     );
   }
 

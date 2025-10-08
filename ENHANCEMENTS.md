@@ -353,6 +353,60 @@ If you have questions or need help:
 
 ---
 
+## 🆕 Latest Enhancements (October 2025)
+
+### 🎪 Sticker Loop Feature
+Create fun and creative designs by looping image stickers!
+
+**Features:**
+- **Sticker Selection:** Browse and select from built-in or network stickers
+- **Pattern Support:** Use all text loop patterns (horizontal, vertical, wrapped, grid)
+- **High Volume:** Loop stickers up to 1 million times
+- **Asset & Network Support:** Use local assets or online image URLs
+- **Inline Rendering:** Stickers display as images in the preview
+
+**How to use:**
+1. Navigate to the Style tab in Shape Mode
+2. Click "Browse" in the Stickers section
+3. Select a sticker from the grid
+4. Switch to Text Loop mode for flexible patterns
+5. Set your loop count and pattern
+6. Generate and enjoy your sticker art!
+
+**Adding Custom Stickers:**
+- Place PNG/JPG images in `assets/stickers/` directory
+- Update `lib/widgets/sticker_picker.dart` with your sticker paths
+- Or use direct image URLs for network stickers
+- See `assets/stickers/README.md` for detailed instructions
+
+### 🎯 Improved Shape Accuracy
+Enhanced rendering algorithms for more precise and beautiful shapes!
+
+**Improvements:**
+- **Circle Generation:** Added smoothness factor for rounder edges
+- **Triangle Rendering:** Better baseline width and edge definition
+- **Heart Shape:** Improved heart equation with smoothing for better appearance
+- **Clamping:** All shapes now clamp to safe size ranges
+- **Anti-aliasing Hints:** Subtle smoothing applied to reduce jagged edges
+
+**Technical Details:**
+- Implemented distance-based smoothing in circle algorithm
+- Enhanced heart curve equation with tolerance adjustment
+- Added min/max clamping to prevent extreme sizes
+- Improved coordinate calculations for polygons
+
+### 📈 Performance & UX Tweaks
+Small improvements to make the app even more enjoyable!
+
+- Sticker tokens use efficient placeholder format
+- Preview widget intelligently detects and renders stickers
+- Copy/share maintains raw sticker tokens for portability
+- Better error handling for missing or broken sticker images
+- Fallback icons display when sticker images fail to load
+
+---
+
 **Made with ❤️ using Flutter**
 
-Version 2.0.0 - Enhanced Edition
+Version 2.1.0 - Sticker Edition
+

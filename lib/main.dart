@@ -21,7 +21,7 @@ class MathShapeCreatorApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeService.lightTheme,
             darkTheme: ThemeService.darkTheme,
-            themeMode: themeService.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: themeService.themeMode,
             home: const HomeScreen(),
           );
         },
