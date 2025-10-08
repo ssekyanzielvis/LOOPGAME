@@ -9,6 +9,7 @@ import '../widgets/text_loop_panel.dart';
 import '../widgets/shape_preview.dart';
 import 'settings_screen.dart';
 import 'presets_screen.dart';
+import 'visualization_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -435,6 +436,19 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: const Icon(Icons.auto_awesome),
           tooltip: 'Templates',
         ),
+      // Visualization button (NEW!)
+      IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const VisualizationScreen(),
+            ),
+          );
+        },
+        icon: const Icon(Icons.analytics),
+        tooltip: 'Math Visualization',
+      ),
       // Info button
       IconButton(
         onPressed: () {
@@ -519,6 +533,19 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         icon: const Icon(Icons.settings),
         tooltip: 'Settings',
+      ),
+      // Visualization button (NEW!)
+      IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const VisualizationScreen(),
+            ),
+          );
+        },
+        icon: const Icon(Icons.analytics),
+        tooltip: 'Math Visualization',
       ),
       IconButton(
         onPressed: () {
